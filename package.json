@@ -3,9 +3,6 @@
   "version": "2.0.0",
   "description": "Simple discord app",
   "main": "main.js",
-  "engines": {
-    "node": ">= 11.14.0"
-  },
   "scripts": {
     "bot": "npx nodemon shardManager.js",
     "server": "npx nodemon api/app.js",
