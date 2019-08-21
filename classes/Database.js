@@ -15,7 +15,6 @@ fs.pathExists(path).then(async exists => {
 const db = new Sequelize({
   dialect: 'sqlite',
   storage: path,
-  operatorsAliases: false,
   logging: null,
   retry: {
     max: 3
