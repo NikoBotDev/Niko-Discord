@@ -1,0 +1,40 @@
+{
+  "default": {
+    "action": "Action: {{action}}",
+    "reason": "Reason"
+  },
+  "command.blacklist": {
+    "add": "Successfully blacklisted {{name}}({{id}}) in this server!",
+    "remove": "Successfully removed {name}}({{id}}) from server blacklist!"
+  },
+  "command.ping.is": "Ping is **{{ping}}**ms",
+  "command.ban.banned": "☣ **__{{username}}({{id}})__** have been banned!",
+  "command.kick.kicked": "🚷 The user **__{{username}}({{id}})__** has been kicked!",
+  "command.mute.muted": "🔇 The user **__{{username}}({{id}})__** has been muted!",
+  "command.mute.time": "Time",
+  "command.prefix.nowPrefix": "The prefix for this server is **{{prefix}}**",
+  "command.prefix.changed": "Prefix changed from {{oldPrefix}} to {{newPrefix}}",
+  "command.purge.removed": "Successfully removed **{{amount}}** messages from this channel.",
+  "command.purge.removedIn": "This message will be removed in 5 seconds.",
+  "command.bye.channelSet": "Successfully set bye channel to {{channel}}",
+  "command.bye.set": "Successfully set bye message to **{{message}}** and channel to {{channel}}",
+  "command.greet.set": "Successfully set greeting message to **{{message}}** and channel to {{channel}}",
+  "command.slow-mode.set": "The new interval between messages for this channel is **{{seconds}}** sec(s)!",
+  "command.soft-ban.banned": "☢ The user **__{{tag}}({{id}})__** has been soft banned!",
+  "command.unban.success": "✅ The user **__{{username}}({{id}})__** has been unbanned",
+  "command.track-stream": {
+    "add": {
+      "doNotExists": "The given username is invalid, check if there are typos or try another one!",
+      "alreadyBeingTracked": "This user is already being tracked in this channel.",
+      "success": "`{{username}}` is now being tracked in {{channel}} the alert message is **{{message}**}}"
+    }
+  },
+  "command.commands.filterMessage": "Those are only the commands you are able to use!",
+  "command.commands.howToUse": "Use the bold name with this command eg: !bcmds **admin**",
+  "command.commands.list": "Command List",
+  "command.commands.groups": "Group List",
+  "command.help.helpMessage": "Hello {{userUsername}}, i'm {{botUsername}} here is some links that might help you, check them below!\nIf you have any questions or want to report a bug, please enter in the [Support Server]({{supportServerInvite}}) you'll be very welcome in there! If you want to add me in your server click in the link below! {{url}}\n",
+  "command.help.commandDescription": "❯ Description",
+  "command.help.commandAliases": "❯ Aliases",
+  "command.help.commandExamples": "❯ Examples"
+}

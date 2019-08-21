@@ -1,0 +1,17 @@
+{
+    "restartable": "rs",
+    "ignore": [
+      ".git",
+      "node_modules/**/node_modules",
+      ".data",
+      ".logs",
+      "commands/**/**",
+      "translations"
+    ],
+    "verbose": true,
+    "execMap": {
+      "js": "node"
+    },
+    "ext": "js,json",
+    "delay": 3e3
+  }
