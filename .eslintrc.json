@@ -30,6 +30,7 @@
     "import/no-extraneous-dependencies": "off",
     "no-restricted-syntax": "off",
     "camelcase": "off",
-    "strict": "off"
+    "strict": "off",
+    "padded-blocks": "off"
   }
 }
