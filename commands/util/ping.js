@@ -14,16 +14,12 @@ class PingCommand extends Command {
   }
 
   async exec(msg) {
-    const m = await msg.util.send('Ping!');
-    const embed = new MessageEmbed()
-      .setColor(this.client.colors.ok)
-      .setDescription(
-        __('command.ping.is', {
-          ping: m.createdTimestamp - msg.createdTimestamp
-        })
-      );
-
-    await msg.util.edit('', embed);
+		const msg = await message.util.send('Pinging~');
+		const latency = (msg.editedTimestamp || msg.createdTimestamp) - (message.editedTimestamp || message.createdTimestamp);
+		return message.util.send([
+			`**Gateway Ping~ ${latency.toString()}ms**`,
+			`**API Ping~ ${Math.round(this.client.ws.ping).toString()}ms**`
+		]);
   }
 }
 
