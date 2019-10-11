@@ -19,7 +19,7 @@
     "canvas": "^2.4.1",
     "canvas-constructor": "^3.0.1",
     "common-tags": "^1.8.0",
-    "concurrently": "^4.1.0",
+    "concurrently": "^5.0.0",
     "date-fns": "^2.0.0-alpha.27",
     "discord-akairo": "1Computer1/discord-akairo",
     "discord.js": "discordjs/discord.js",
@@ -39,12 +39,12 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "eslint": "6.2.1",
+    "eslint": "6.5.1",
     "eslint-config-airbnb-base": "14.0.0",
     "eslint-config-node": "^4.0.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "prettier": "^1.18.2"
   }
