@@ -28,7 +28,7 @@ class AvatarCommand extends Command {
     if (availableChoices.length === 1) return;
     const choice =
       availableChoices[Math.floor(Math.random() * availableChoices.length)];
-    msg.util.send(`I chose **${choice}**`);
+    msg.util.send(`I choose **${choice}**`);
   }
 }
 
