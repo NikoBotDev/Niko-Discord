@@ -14,10 +14,10 @@ class PingCommand extends Command {
 
   async exec(msg) {
     const pingMsg = await msg.util.send('Pinging~');
-    const latency = msg.createdTimestamp - pingMsg.createdTimestamp;
+    const latency = pingMsg.createdTimestamp - msg.createdTimestamp;
     return msg.util.send([
-      `**Gateway Ping~ ${latency.toString()}ms**`,
-      `**API Ping~ ${Math.round(this.client.ws.ping).toString()}ms**`
+      `**Gateway Ping~ ${latency}ms**`,
+      `**API Ping~ ${Math.round(this.client.ws.ping)}ms**`
     ]);
   }
 }
