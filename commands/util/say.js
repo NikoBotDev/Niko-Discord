@@ -1,5 +1,6 @@
-const {Command} = require('discord-akairo');
-const {Message, MessageEmbed} = require('discord.js');
+const { Command } = require('discord-akairo');
+const { Message, MessageEmbed } = require('discord.js');
+
 class SayCommand extends Command {
   constructor() {
     super('say', {
@@ -16,11 +17,12 @@ class SayCommand extends Command {
       ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     */
-  async exec(msg, {text}) {
+   * @param {Message} msg
+   * @param {Object} args
+   */
+  async exec(msg, { text }) {
     msg.channel.send(text);
   }
 }

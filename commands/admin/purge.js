@@ -1,6 +1,10 @@
-const {Command, Argument: {range, union}} = require('discord-akairo');
-const {Message, MessageEmbed, GuildMember} = require('discord.js');
-const {oneLine} = require('common-tags');
+const {
+  Command,
+  Argument: { range, union }
+} = require('discord-akairo');
+const { Message, MessageEmbed, GuildMember } = require('discord.js');
+const { oneLine } = require('common-tags');
+
 class PurgeCommand extends Command {
   constructor() {
     super('purge', {
@@ -11,10 +15,7 @@ class PurgeCommand extends Command {
                 me, command, bot, all or member mention and you can add the -fp flag to filter
                 pinned (hyper important) messages from the channel.`,
         usage: '<amount> [type] [-fp flag]',
-        examples: [
-          '10 me|command|bot|all|@member [-fp]',
-          '10 me -fp',
-        ],
+        examples: ['10 me|command|bot|all|@member [-fp]', '10 me -fp']
       },
       ratelimit: 2,
       clientPermissions: ['MANAGE_MESSAGES'],
@@ -25,30 +26,31 @@ class PurgeCommand extends Command {
           type: range('integer', 5, 100),
           prompt: {
             start: 'How many messages you want to be deleted?\n',
-            retry: 'This isn\'t a valid amount, the range must be 5 ~ 100',
-          },
+            retry: "This isn't a valid amount, the range must be 5 ~ 100"
+          }
         },
         {
           id: 'type',
           type: union('lowercase', 'memberMention'),
-          default: 'all',
+          default: 'all'
         },
         {
           id: 'filterPinned',
           match: 'flag',
-          flag: ['-fp', '-filterpinned'],
-        },
-      ],
+          flag: ['-fp', '-filterpinned']
+        }
+      ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     * @param {number} args.amount
-     * @param {GuildMember|string} args.type
-     */
-  async exec(msg, {amount, type, filterPinned}) {
-    let messages = await msg.channel.messages.fetch({limit: amount + 1});
+   * @param {Message} msg
+   * @param {Object} args
+   * @param {number} args.amount
+   * @param {GuildMember|string} args.type
+   */
+  async exec(msg, { amount, type, filterPinned }) {
+    let messages = await msg.channel.messages.fetch({ limit: amount + 1 });
     let filter = null;
     if (filterPinned) {
       messages = messages.filter(m => !m.pinned);
@@ -72,13 +74,11 @@ class PurgeCommand extends Command {
     messages = filter ? messages.filter(filter) : messages;
     await msg.channel.bulkDelete(messages, true);
     const embed = new MessageEmbed()
-        .setColor(this.client.colors.ok)
-        .setDescription(
-          __('command.purge.removed', { amount: messages.size })
-        )
-        .setFooter(__('command.purge.removedIn'));
+      .setColor(this.client.colors.ok)
+      .setDescription(__('command.purge.removed', { amount: messages.size }))
+      .setFooter(__('command.purge.removedIn'));
     const res = await msg.util.send(embed);
-        res.deletable ? res.delete({timeout: 5e3}) : null;
+    res.deletable ? res.delete({ timeout: 5e3 }) : null;
   }
 }
 

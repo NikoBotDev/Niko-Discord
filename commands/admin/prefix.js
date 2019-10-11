@@ -1,5 +1,6 @@
-const {Command} = require('discord-akairo');
-const {Message} = require('discord.js');
+const { Command } = require('discord-akairo');
+const { Message } = require('discord.js');
+
 class PrefixCommand extends Command {
   constructor() {
     super('prefix', {
@@ -10,22 +11,23 @@ class PrefixCommand extends Command {
       description: {
         content: 'Displays or changes the prefix of the guild.',
         usage: '[prefix]',
-        examples: ['>'],
+        examples: ['>']
       },
       args: [
         {
           id: 'prefix',
-          default: '',
-        },
-      ],
+          default: ''
+        }
+      ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     * @param {string} args.prefix
-     */
-  async exec(msg, {prefix}) {
+   * @param {Message} msg
+   * @param {Object} args
+   * @param {string} args.prefix
+   */
+  async exec(msg, { prefix }) {
     const oldPrefix = this.client.settings.get(msg.guild.id, 'prefix', '!b');
     if (!prefix) {
       return msg.reply(__('command.prefix.nowPrefix', { prefix: oldPrefix }));

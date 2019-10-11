@@ -1,9 +1,11 @@
-const {Command} = require('discord-akairo');
-const {Message} = require('discord.js');
+const { Command } = require('discord-akairo');
+const { Message } = require('discord.js');
+
 const day = 24 * 60 * 60 * 1000;
 const format = require('date-fns/format');
 const differenceInMilliseconds = require('date-fns/differenceInMilliseconds');
-const {xp: exp} = require('../../services');
+const { xp: exp } = require('../../services');
+
 class DailyCommand extends Command {
   constructor() {
     super('daily', {
@@ -11,13 +13,14 @@ class DailyCommand extends Command {
       category: 'level',
       clientPermissions: ['EMBED_LINKS'],
       description: {
-        content: 'Get your daily reward!',
-      },
+        content: 'Get your daily reward!'
+      }
     });
   }
+
   /**
-     * @param {Message} msg
-     */
+   * @param {Message} msg
+   */
   async exec(msg) {
     const user = await this.client.db.profiles.findOne({
       where: {
@@ -25,15 +28,23 @@ class DailyCommand extends Command {
       }
     });
     if (!user) {
-      return msg.reply('Sorry, you don\'t have an account, type anything to make one');
+      return msg.reply(
+        "Sorry, you don't have an account, type anything to make one"
+      );
     }
-    const diff = differenceInMilliseconds(new Date(parseInt(user.daily)), new Date());
+    const diff = differenceInMilliseconds(
+      new Date(parseInt(user.daily)),
+      new Date()
+    );
     const date = new Date(diff);
 
-    if (((new Date) - user.daily) < day) {
-      const timeLasting = format(date.setHours(date.getHours() + 24), 'kk:mm:ss');
+    if (new Date() - user.daily < day) {
+      const timeLasting = format(
+        date.setHours(date.getHours() + 24),
+        'kk:mm:ss'
+      );
       return msg.reply(
-          `You already claimed your daily, wait **${timeLasting}** to get it again!`
+        `You already claimed your daily, wait **${timeLasting}** to get it again!`
       );
     }
     const xp = exp.getXpRewardForLevel(user.level);

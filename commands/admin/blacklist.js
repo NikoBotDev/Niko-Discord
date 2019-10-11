@@ -1,5 +1,8 @@
-const {Command, Argument: {validate}} = require('discord-akairo');
-const {Message} = require('discord.js');
+const {
+  Command,
+  Argument: { validate }
+} = require('discord-akairo');
+
 class BlacklistCommand extends Command {
   constructor() {
     super('blacklist', {
@@ -10,10 +13,7 @@ class BlacklistCommand extends Command {
       description: {
         content: 'Add or remove a user from server blacklist',
         usage: '<add|remove> <user>',
-        examples: [
-          'add @user',
-          'remove @user',
-        ],
+        examples: ['add @user', 'remove @user']
       },
       args: [
         {
@@ -22,30 +22,33 @@ class BlacklistCommand extends Command {
             return ['add', 'remove'].includes(type);
           }),
           prompt: {
-            start: 'You want to `remove` or `add` a user?\n',
-          },
+            start: 'You want to `remove` or `add` a user?\n'
+          }
         },
         {
           id: 'args',
           match: 'rest',
           prompt: {
-            start: 'What user you want to be blacklisted?\n',
-          },
-        },
-      ],
+            start: 'What user you want to be blacklisted?\n'
+          }
+        }
+      ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     * @param {string} args.type
-     * @param {string} args.args
-     */
-  async exec(msg, {type, args}) {
-    const command = this.handler.modules.get({
-      add: 'blacklist-add',
-      remove: 'blacklist-remove',
-    }[type]);
+   * @param {Message} msg
+   * @param {Object} args
+   * @param {string} args.type
+   * @param {string} args.args
+   */
+  async exec(msg, { type, args }) {
+    const command = this.handler.modules.get(
+      {
+        add: 'blacklist-add',
+        remove: 'blacklist-remove'
+      }[type]
+    );
     return this.handler.handleDirectCommand(msg, args, command);
   }
 }

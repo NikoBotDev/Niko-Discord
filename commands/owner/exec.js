@@ -1,6 +1,7 @@
-const {Command} = require('discord-akairo');
-const {Message} = require('discord.js');
-const {exec} = require('child_process');
+const { Command } = require('discord-akairo');
+const { Message } = require('discord.js');
+const { exec } = require('child_process');
+
 class ExecuteCommand extends Command {
   constructor() {
     super('exec', {
@@ -9,7 +10,7 @@ class ExecuteCommand extends Command {
       ownerOnly: true,
       description: {
         content: 'Allow execution of bash code',
-        usage: '[code]',
+        usage: '[code]'
       },
       args: [
         {
@@ -17,25 +18,31 @@ class ExecuteCommand extends Command {
           type: 'string',
           match: 'content',
           prompt: {
-            start: 'What script you want to be executed?\n',
-          },
-        },
-      ],
+            start: 'What script you want to be executed?\n'
+          }
+        }
+      ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     * @param {string} bash
-     */
-  async exec(msg, {bash}) {
+   * @param {Message} msg
+   * @param {Object} args
+   * @param {string} bash
+   */
+  async exec(msg, { bash }) {
     try {
       const result = await this.executeScript(bash);
-      return msg.util.send(`➡ Input: \`\`\`${bash}\`\`\` \n✅ Output:\n\`\`\`${result}\`\`\``);
+      return msg.util.send(
+        `➡ Input: \`\`\`${bash}\`\`\` \n✅ Output:\n\`\`\`${result}\`\`\``
+      );
     } catch (err) {
-      return msg.util.send(`➡ Input: \`\`\`${bash}\`\`\` \n❌ Output:\n\`\`\`${err}\`\`\``);
+      return msg.util.send(
+        `➡ Input: \`\`\`${bash}\`\`\` \n❌ Output:\n\`\`\`${err}\`\`\``
+      );
     }
   }
+
   executeScript(code) {
     return new Promise((resolve, reject) => {
       exec(code, (error, stdout, stderr) => {

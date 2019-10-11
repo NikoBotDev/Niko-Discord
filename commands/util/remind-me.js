@@ -1,6 +1,10 @@
-const {Command, Argument: {validate}} = require('discord-akairo');
-const {Message, MessageEmbed} = require('discord.js');
-const {createTimer, parseTime} = require('../../services/remind.service');
+const {
+  Command,
+  Argument: { validate }
+} = require('discord-akairo');
+const { Message, MessageEmbed } = require('discord.js');
+const { createTimer, parseTime } = require('../../services/remind.service');
+
 class RemindMeCommand extends Command {
   constructor() {
     super('remind-me', {
@@ -17,7 +21,8 @@ class RemindMeCommand extends Command {
             return true;
           }),
           prompt: {
-            start: 'What\'s the relative time that this reminder will be sent? Eg: 1d',
+            start:
+              "What's the relative time that this reminder will be sent? Eg: 1d",
             retry: 'You provided an invalid time, please try again!'
           }
         },
@@ -36,19 +41,22 @@ class RemindMeCommand extends Command {
       ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     * @param {string} args.time
-     * @param {string} args.of_
-     */
-  async exec(msg, {time, of_}) {
+   * @param {Message} msg
+   * @param {Object} args
+   * @param {string} args.time
+   * @param {string} args.of_
+   */
+  async exec(msg, { time, of_ }) {
     const milliseconds = parseTime(time);
-    const {created, relative} = await createTimer(msg, milliseconds, of_);
+    const { created, relative } = await createTimer(msg, milliseconds, of_);
     if (!created) {
       return msg.util.reply('An error occurred while making the timer...');
     }
-    return msg.util.reply(`Alright, i'll remind you of *${of_}* **${relative}**`);
+    return msg.util.reply(
+      `Alright, i'll remind you of *${of_}* **${relative}**`
+    );
   }
 }
 

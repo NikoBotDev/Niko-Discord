@@ -1,5 +1,9 @@
-const {Command, Argument: {union}} = require('discord-akairo');
-const {Message, MessageEmbed} = require('discord.js');
+const {
+  Command,
+  Argument: { union }
+} = require('discord-akairo');
+const { Message, MessageEmbed } = require('discord.js');
+
 class ReloadCommand extends Command {
   constructor() {
     super('reload', {
@@ -8,7 +12,7 @@ class ReloadCommand extends Command {
       category: 'owner',
       description: {
         content: 'Reload a command',
-        usage: '[command]',
+        usage: '[command]'
       },
       args: [
         {
@@ -17,22 +21,23 @@ class ReloadCommand extends Command {
           type: union('command', 'commandAlias'),
           prompt: {
             start: 'What command you want to be reloaded?\n',
-            retry: 'I cannot find that command, try again.',
-          },
-        },
-      ],
+            retry: 'I cannot find that command, try again.'
+          }
+        }
+      ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     * @param {Command} args.command
-     */
-  exec(msg, {command}) {
+   * @param {Message} msg
+   * @param {Object} args
+   * @param {Command} args.command
+   */
+  exec(msg, { command }) {
     command.reload();
     const embed = new MessageEmbed()
-        .setColor(this.client.colors.ok)
-        .setDescription(`The command ${command} has been reloaded!`);
+      .setColor(this.client.colors.ok)
+      .setDescription(`The command ${command} has been reloaded!`);
     msg.util.send('', embed);
   }
 }

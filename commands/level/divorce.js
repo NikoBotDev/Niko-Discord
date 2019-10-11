@@ -1,6 +1,7 @@
-const {Command} = require('discord-akairo');
-const {Message, MessageEmbed, GuildMember} = require('discord.js');
-const {oneLine, stripIndent} = require('common-tags');
+const { Command } = require('discord-akairo');
+const { Message, MessageEmbed, GuildMember } = require('discord.js');
+const { oneLine, stripIndent } = require('common-tags');
+
 class DivorceCommand extends Command {
   constructor() {
     super('divorce', {
@@ -25,12 +26,13 @@ class DivorceCommand extends Command {
       ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     * @param {GuildMember} args.member
-     */
-  async exec(msg, {member}) {
+   * @param {Message} msg
+   * @param {Object} args
+   * @param {GuildMember} args.member
+   */
+  async exec(msg, { member }) {
     const author = await this.client.db.profiles.findOne({
       where: {
         userId: msg.author.id
@@ -43,21 +45,19 @@ class DivorceCommand extends Command {
     });
     if (!user || !author) {
       return msg.util.reply(
-          oneLine`Sorry, you or the user you mentioned doesn't 
+        oneLine`Sorry, you or the user you mentioned doesn't 
         have an account, please type anything to make one!`
       );
     }
     if (author.get('coins') < 1000) {
-      return msg.reply(
-          'You need **1000** coins to divorce'
-      );
+      return msg.reply('You need **1000** coins to divorce');
     }
     try {
       const transaction = await this.client.db.transaction();
       try {
-        await author.decrement({coins: 1000}, {transaction});
-        await author.update({married: null}, {transaction});
-        await user.update({married: null}, {transaction});
+        await author.decrement({ coins: 1000 }, { transaction });
+        await author.update({ married: null }, { transaction });
+        await user.update({ married: null }, { transaction });
         await transaction.commit();
       } catch (err) {
         await transaction.rollback();
@@ -68,12 +68,10 @@ class DivorceCommand extends Command {
     }
 
     const embed = new MessageEmbed()
-        .setDescription(
-            `${msg.author} and ${member} are now divorced...`
-        )
-        .setThumbnail(member.user.displayAvatarURL({format: 'png'}))
-        .setImage(msg.author.displayAvatarURL())
-        .setTimestamp();
+      .setDescription(`${msg.author} and ${member} are now divorced...`)
+      .setThumbnail(member.user.displayAvatarURL({ format: 'png' }))
+      .setImage(msg.author.displayAvatarURL())
+      .setTimestamp();
     return msg.util.send(embed);
   }
 }

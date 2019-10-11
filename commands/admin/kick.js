@@ -2,7 +2,8 @@ const {
   Command,
   Argument: { validate }
 } = require('discord-akairo');
-const { Message, MessageEmbed, GuildMember } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
+
 class KickCommand extends Command {
   constructor() {
     super('kick', {
@@ -36,6 +37,7 @@ class KickCommand extends Command {
       ]
     });
   }
+
   /**
    * @param {Message} msg
    * @param {Object} args

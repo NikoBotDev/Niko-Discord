@@ -3,9 +3,9 @@ const Settings = (sequelize, DataTypes) => {
     guildId: {
       type: DataTypes.STRING,
       unique: true,
-      primaryKey: true,
+      primaryKey: true
     },
-    settings: DataTypes.JSON,
+    settings: DataTypes.JSON
   });
 };
 

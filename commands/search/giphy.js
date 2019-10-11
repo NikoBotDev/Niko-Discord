@@ -1,9 +1,13 @@
-const {Command} = require('discord-akairo');
-const {Message, MessageEmbed} = require('discord.js');
-const {requests: {getJSON}} = require('../../util');
-const {GIPHY_KEY} = process.env;
-const {stringify} = require('querystring');
-const {oneLine} = require('common-tags');
+const { Command } = require('discord-akairo');
+const { Message, MessageEmbed } = require('discord.js');
+
+const { GIPHY_KEY } = process.env;
+const { stringify } = require('querystring');
+const { oneLine } = require('common-tags');
+const {
+  requests: { getJSON }
+} = require('../../util');
+
 class GiphyCommand extends Command {
   constructor() {
     super('giphy', {
@@ -12,7 +16,7 @@ class GiphyCommand extends Command {
       description: {
         content: oneLine`Get a random gif from giphy which 
                 can or not be related to te given tags`,
-        usage: '<tags>',
+        usage: '<tags>'
       },
       args: [
         {
@@ -21,26 +25,27 @@ class GiphyCommand extends Command {
           prompt: {
             start: [
               'What tags you want to search?\n',
-              'Type `stop` when you are done.',
+              'Type `stop` when you are done.'
             ],
-            infinite: true,
-          },
-        },
-      ],
+            infinite: true
+          }
+        }
+      ]
     });
   }
+
   /**
-     * @param {Message} msg
-     * @param {Object} args
-     * @param {string[]} args.tags
-     */
-  async exec(msg, {tags}) {
+   * @param {Message} msg
+   * @param {Object} args
+   * @param {string[]} args.tags
+   */
+  async exec(msg, { tags }) {
     const offset = Math.floor(Math.random() * 4 + 1);
     const query = stringify({
       q: tags.join(' '),
       api_key: GIPHY_KEY,
       limit: 30,
-      offset,
+      offset
     });
     let gifs = await getJSON(`http://api.giphy.com/v1/gifs/search?${query}`);
     if (!gifs || gifs.data.length === 0) return;
@@ -48,10 +53,10 @@ class GiphyCommand extends Command {
     const index = Math.floor(Math.random() * gifs.length);
     const gif = gifs[index];
     const embed = new MessageEmbed()
-        .setColor(this.client.colors.ok)
-        .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
-        .setImage(gif.images.original.url)
-        .setFooter('Powered by Giphy api');
+      .setColor(this.client.colors.ok)
+      .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
+      .setImage(gif.images.original.url)
+      .setFooter('Powered by Giphy api');
     return msg.util.send(embed);
   }
 }
