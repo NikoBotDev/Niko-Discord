@@ -6,7 +6,6 @@ const { promisifyAll } = require('bluebird');
 // Change methods to Async
 promisifyAll(RedisClient.prototype);
 promisifyAll(Multi.prototype);
-
 const client = createClient();
 const logger = require('./Logger');
 
