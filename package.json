@@ -6,7 +6,7 @@
   "scripts": {
     "bot": "npx nodemon shardManager.js",
     "server": "npx nodemon api/app.js",
-    "start": "npx concurrently \"yarn run bot\" \"yarn run server\"",
+    "start": "npx concurrently \"npm run bot\" \"npm run server\"",
     "lint": "eslint . --o ./eslint-result.log -f visualstudio && exit 0",
     "lint:fix": "eslint . --o ./eslint-result.log -f visualstudio --fix && exit 0",
     "format": "npx prettier *.js --config ./.prettierrc"
@@ -35,7 +35,7 @@
     "redis": "^2.8.0",
     "sequelize": "^5.15.2",
     "sherlockjs": "^1.4.0",
-    "sqlite3": "^4.0.6",
+    "sqlite3": "^4.1.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
