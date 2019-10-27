@@ -10,21 +10,27 @@ import {
 import { Message, Guild } from 'discord.js';
 import { join } from 'path';
 import i18n from 'i18n';
+import { RedisClient } from 'redis';
 import { promises as fs } from 'fs';
 import Redis from './Redis';
 import Database from './Database';
 import { importModels } from '../util';
 import { hexCode } from '../types';
-import { ModelType } from 'sequelize';
+import { ModelType, Sequelize } from 'sequelize';
 const { TOKEN } = process.env;
 const settings: ModelType = Database.db.import('../data/models/settings');
-interface Niko extends AkairoClient {
-  colors: any;
-  commandHandler: CommandHandler;
-  listenerHandler: ListenerHandler;
-  inhibitorHandler: InhibitorHandler;
-  settings: SequelizeProvider;
+declare module 'discord-akairo' {
+  interface AkairoClient {
+    colors: any;
+    commandHandler: CommandHandler;
+    listenerHandler: ListenerHandler;
+    inhibitorHandler: InhibitorHandler;
+    settings: SequelizeProvider;
+    db: Sequelize;
+    redis: RedisClient;
+  }
 }
+
 class Niko extends AkairoClient {
   constructor() {
     super(

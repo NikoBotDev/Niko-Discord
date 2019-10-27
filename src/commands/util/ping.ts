@@ -1,6 +1,6 @@
-const { Command } = require('discord-akairo');
-
-class PingCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message } from 'discord.js';
+export default class PingCommand extends Command {
   constructor() {
     super('ping', {
       aliases: ['ping'],
@@ -12,14 +12,12 @@ class PingCommand extends Command {
     });
   }
 
-  async exec(msg) {
-    const pingMsg = await msg.util.send('Pinging~');
+  async exec(msg: Message) {
+    const pingMsg = await msg.util!.send('Pinging~');
     const latency = pingMsg.createdTimestamp - msg.createdTimestamp;
-    return msg.util.send([
+    return msg.util!.send([
       `**Gateway Ping~ ${latency}ms**`,
       `**API Ping~ ${Math.round(this.client.ws.ping)}ms**`
     ]);
   }
 }
-
-module.exports = PingCommand;
