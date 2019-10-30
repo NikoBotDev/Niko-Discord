@@ -34,7 +34,7 @@
     "ms": "^2.1.1",
     "nodemon": "^1.18.10",
     "redis": "^2.8.0",
-    "sequelize": "^5.15.2",
+    "sequelize": "^5.21.2",
     "sherlockjs": "^1.4.0",
     "sqlite3": "^4.1.0",
     "winston": "^3.2.1"
