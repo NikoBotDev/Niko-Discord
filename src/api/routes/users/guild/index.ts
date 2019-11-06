@@ -1,13 +1,13 @@
-import { Router, Request, Response } from 'express';
-
+import { Router } from 'express';
+import GuildUserController from '../../../controllers/GuildUserController';
 const router = Router();
 
-router.get('/:guildId/:userId', (req: Request, res: Response) => {});
+router.get('/:guildId/:userId', GuildUserController.store);
 
-router.post('/:guildId/:userId', (req: Request, res: Response) => {});
+router.post('/:guildId/:userId', GuildUserController.add);
 
-router.delete('/:guildId/:userId', (req: Request, res: Response) => {});
+router.delete('/:guildId/:userId', GuildUserController.delete);
 
-router.put('/:guildId/:userId', (req: Request, res: Response) => {});
+router.put('/:guildId/:userId', GuildUserController.update);
 
 export default router;
