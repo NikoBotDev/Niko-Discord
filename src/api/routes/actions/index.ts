@@ -1,13 +1,11 @@
 import { Router, Request, Response } from 'express';
-
+import ActionsController from '../../controllers/ActionsController';
 const router = Router();
 
-router.get('/:type', (req: Request, res: Response) => {
-  // TODO
-});
+router.get('/:type', ActionsController.store);
 
-router.post('/:type', (req: Request, res: Response) => {});
+router.post('/:type', ActionsController.add);
 
-router.delete('/:type', (req: Request, res: Response) => {});
+router.delete('/:type', ActionsController.delete);
 
 export default router;
