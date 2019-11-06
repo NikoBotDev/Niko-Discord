@@ -1,7 +1,7 @@
 <h1 align="center">Welcome to Niko Discord 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-2.0.0-blue.svg?cacheSeconds=2592000" />
-  <img src="https://img.shields.io/badge/node->10.15.0-blue.svg" />
+  <img src="https://img.shields.io/badge/node->=10.15.0-blue.svg" />
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
