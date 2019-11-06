@@ -1,28 +1,37 @@
-# NikoBot
+<h1 align="center">Welcome to Niko Discord 👋</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-2.0.0-blue.svg?cacheSeconds=2592000" />
+  <a href="#" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+</p>
 
-## Contributing
-
-If you want to contribute in this project please follow the contribution guidelines below.
+> Niko is a Discord Bot with a lot of features to help you manage your server
 
 ## Requirements
 
-- **NodeJS 11** or **greater**
+- **NodeJS 10** or **greater**
+- **Typescript**
 - **Redis**
 - **NPM** or **Yarn**
-- A good code editor like [**Visual Studio Code**](https://code.visualstudio.com/download)
+- A good code editor like [**Visual Studio Code**](https://code.visualstudio.com/download) (Just for dev)
 
-Before you send your pull request please test the bot and use the command `npm run eslint` or `yarn run eslint`, if no errors appear in the console you should go ahead and send your PR!
+## Usage
 
-If you want to send a issue, describe it as much detail as possible, that way i or any contributor can fix it very fast.
+```sh
+npm run start
+```
 
-## Creating an issue
+## Author
 
-1. Check if your issue already exists searching in the **Issues** tab
-2. Click in the "New issue" button
-3. Choose your type of issue **Bug Report** or **Feature Request**
-4. Fill all the information like title and other infos depending on the type of the issue
-5. Send it :)
+👤 **Me**
 
-## License
+- Github: [@Me](https://github.com/NikoBotDev)
 
-I don't have anything with the author of OneShot, i just made this bot for fun and because i love OneShot, if you like it please leave a star i'll be very happy.
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/NikoBotDev/Niko-Discord/issues).
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
