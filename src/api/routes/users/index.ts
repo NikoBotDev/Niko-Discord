@@ -1,13 +1,13 @@
-import { Router, Request, Response } from 'express';
-
+import { Router } from 'express';
+import UserController from '../../controllers/UserController';
 const router = Router();
 
-router.get(':userId', (req: Request, res: Response) => {});
+router.get(':userId', UserController.store);
 
-router.post(':userId', (req: Request, res: Response) => {});
+router.post(':userId', UserController.add);
 
-router.delete(':userId', (req: Request, res: Response) => {});
+router.delete(':userId', UserController.delete);
 
-router.put(':userId', (req: Request, res: Response) => {});
+router.put(':userId', UserController.update);
 
 export default router;
