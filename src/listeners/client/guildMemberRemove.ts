@@ -18,8 +18,7 @@ export default class GuildMemberRemoveListener extends Listener {
     if (member.user.bot) return;
     const { guild } = member;
     const bye = this.client.settings.get(guild.id, 'bye', '');
-    if (!bye) return;
-    const channel = guild.channels.get(bye.channel) as TextChannel;
+    const channel = guild.channels.get(bye?.channel ?? '') as TextChannel;
     if (
       !channel ||
       !channel.permissionsFor(this.client.user!)!.has('SEND_MESSAGES')
