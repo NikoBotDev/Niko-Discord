@@ -1,55 +1,58 @@
-import { Sequelize, DataTypes as DT } from 'sequelize';
-const Profiles = (sequelize: Sequelize, DataTypes: typeof DT) => {
-  return sequelize.define(
-    'profiles',
-    {
-      userId: {
-        type: DataTypes.TEXT,
-        unique: true,
-        primaryKey: true
-      },
-      level: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1
-      },
-      xp: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1
-      },
-      coins: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-        validate: {
-          min: 0
-        }
-      },
-      married: DataTypes.TEXT({ length: 'tiny' }),
-      profile_bg: {
-        type: DataTypes.STRING,
-        defaultValue: 'default'
-      },
-      daily: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
-      },
-      badges: {
-        type: DataTypes.JSON,
-        defaultValue: []
-      },
-      streak: {
-        type: DataTypes.INTEGER({ length: 1 }),
-        defaultValue: 0
-      }
-    },
-    {
-      timestamps: false,
-      scopes: {
-        rank: {
-          attributes: ['userId', 'xp', 'level', 'coins'],
-          order: [['level', 'DESC'], ['xp', 'DESC']]
-        }
-      }
+import {
+  Column,
+  Model,
+  Table,
+  PrimaryKey,
+  Default,
+  Scopes,
+  AllowNull,
+  DataType
+} from 'sequelize-typescript';
+@Scopes(() => ({
+  rank: {
+    attributes: ['userId', 'xp', 'level', 'coins'],
+    order: [
+      ['level', 'DESC'],
+      ['xp', 'DESC']
+    ]
+  }
+}))
+@Table({ timestamps: false })
+export class Profile extends Model<Profile> {
+  @Column(DataType.TEXT)
+  @PrimaryKey
+  public userId!: string;
+  @Column(DataType.INTEGER)
+  @Default(1)
+  public level!: number;
+
+  @Column(DataType.INTEGER)
+  @Default(1)
+  public xp!: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    validate: {
+      min: 0
     }
-  );
-};
-export default Profiles;
+  })
+  @Default(0)
+  public coins!: number;
+
+  @Column(DataType.TEXT)
+  @AllowNull
+  public married!: string;
+
+  @Column(DataType.STRING)
+  @Default('default')
+  public profile_bg!: string;
+
+  @Column(DataType.JSON)
+  @Default([])
+  public badges!: string[];
+  @Column(DataType.INTEGER({ length: 1 }))
+  @Default(0)
+  public streak!: number;
+}
+
+export default Profile;
