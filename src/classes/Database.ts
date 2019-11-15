@@ -23,7 +23,7 @@ class Database {
     return db;
   }
 
-  static async start() {
+  public static async start() {
     try {
       logger.info('[SETUPING PRAGMAS...]');
       await db.query('PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF');

@@ -1,7 +1,7 @@
 'use strict';
 
-import winston from 'winston';
 import { inspect } from 'util';
+import winston from 'winston';
 
 // Setup Logger
 const logger = winston.createLogger({
@@ -11,7 +11,7 @@ const logger = winston.createLogger({
     }),
     winston.format.timestamp(),
     winston.format.splat(),
-    winston.format.printf(i => {
+    winston.format.printf((i) => {
       const isObject = typeof i.message === 'object';
       // eslint-disable-next-line max-len
       return `${i.timestamp} | [${i.level}] ${

@@ -1,8 +1,7 @@
-const { Command } = require('discord-akairo');
-const { MessageEmbed } = require('discord.js');
-const format = require('date-fns/format');
-
-class UserInfoCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed, GuildMember } from 'discord.js';
+import format from 'date-fns/format';
+export default class UserInfoCommand extends Command {
   constructor() {
     super('user-info', {
       aliases: ['user-info', 'uinfo'],
@@ -18,13 +17,13 @@ class UserInfoCommand extends Command {
           id: 'member',
           description: 'Member to get information about.',
           type: 'member',
-          default: msg => msg.member
+          default: (msg: Message) => msg.member
         }
       ]
     });
   }
 
-  exec(msg, { member }) {
+  public exec(msg: Message, { member }: { member: GuildMember }) {
     const { activity } = member.presence;
     const embed = new MessageEmbed()
       .setColor(this.client.colors.ok)
@@ -32,7 +31,7 @@ class UserInfoCommand extends Command {
       .addField('ID', member.id, true)
       .addField(
         'Joined At',
-        format(member.joinedAt, 'dd-MM-yyyy HH:mm:ss') || '?'
+        format(member.joinedAt as Date, 'dd-MM-yyyy HH:mm:ss') || '?'
       )
       .addField(
         'Joined Discord',
@@ -41,15 +40,13 @@ class UserInfoCommand extends Command {
       .addField(
         'Roles',
         `**(${member.roles.size - 1})** ${member.roles
-          .filter(({ id }) => id !== msg.guild.id)
+          .filter(({ id }) => id !== msg.guild!.id)
           .map(({ name }) => name)
           .splice(0, 5)
           .join('\n')}`
       )
       .addField('Status', member.presence.status)
       .setFooter(`Now Playing: ${activity ? activity.name : ''}`);
-    msg.util.send('', embed);
+    return msg.util!.send('', embed);
   }
 }
-
-module.exports = UserInfoCommand;

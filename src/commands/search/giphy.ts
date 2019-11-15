@@ -1,20 +1,16 @@
-const { Command } = require('discord-akairo');
-const { Message, MessageEmbed } = require('discord.js');
-
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
+import { stringify } from 'querystring';
+import { oneLine } from 'common-tags';
+import { getJSON } from '../../util/requests';
 const { GIPHY_KEY } = process.env;
-const { stringify } = require('querystring');
-const { oneLine } = require('common-tags');
-const {
-  requests: { getJSON }
-} = require('../../util');
-
-class GiphyCommand extends Command {
+export default class GiphyCommand extends Command {
   constructor() {
     super('giphy', {
       aliases: ['giphy', 'gpy'],
       category: 'search',
       description: {
-        content: oneLine`Get a random gif from giphy which 
+        content: oneLine`Get a random gif from giphy which
                 can or not be related to te given tags`,
         usage: '<tags>'
       },
@@ -34,12 +30,7 @@ class GiphyCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   * @param {Object} args
-   * @param {string[]} args.tags
-   */
-  async exec(msg, { tags }) {
+  public async exec(msg: Message, { tags }: { tags: string[] }) {
     const offset = Math.floor(Math.random() * 4 + 1);
     const query = stringify({
       q: tags.join(' '),
@@ -57,8 +48,6 @@ class GiphyCommand extends Command {
       .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
       .setImage(gif.images.original.url)
       .setFooter('Powered by Giphy api');
-    return msg.util.send(embed);
+    return msg.util!.send(embed);
   }
 }
-
-module.exports = GiphyCommand;

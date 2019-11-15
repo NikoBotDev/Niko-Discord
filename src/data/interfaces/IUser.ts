@@ -1,9 +1,5 @@
 import { Model } from 'sequelize';
-interface PropertyGetterOptions {
-  plain: boolean;
-}
-type PropertyGetter = (options?: PropertyGetterOptions) => IUser | any;
-interface IUser {
+interface IUser extends Model {
   userId: string;
   level: number;
   xp: number;
@@ -13,7 +9,6 @@ interface IUser {
   daily: number;
   badges: string[];
   streak: number;
-  get: PropertyGetter;
 }
 
 export default IUser;

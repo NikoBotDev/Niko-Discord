@@ -1,11 +1,8 @@
-const { Command } = require('discord-akairo');
-const { Message, MessageAttachment } = require('discord.js');
-const { getJSON } = require('../../util/requests');
-const {
-  image: { getPalette }
-} = require('../../services');
-
-class PaletteCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message, MessageAttachment } from 'discord.js';
+import { getJSON } from '../../util/requests';
+import { getPalette } from '../../services/image.service';
+export default class PaletteCommand extends Command {
   constructor() {
     super('palette', {
       aliases: ['palette', 'ptt'],
@@ -17,10 +14,7 @@ class PaletteCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   */
-  async exec(msg) {
+  public async exec(msg: Message) {
     const data = await getJSON('http://colormind.io/api/', {
       method: 'POST',
       data: {
@@ -35,5 +29,3 @@ class PaletteCommand extends Command {
     msg.channel.send(msg.author, attachment);
   }
 }
-
-module.exports = PaletteCommand;

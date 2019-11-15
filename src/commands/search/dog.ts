@@ -1,8 +1,7 @@
-const { Command } = require('discord-akairo');
-const { MessageEmbed } = require('discord.js');
-const axios = require('axios');
-
-class DogCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
+import axios from 'axios';
+export default class DogCommand extends Command {
   constructor() {
     super('dog', {
       aliases: ['dog'],
@@ -14,7 +13,7 @@ class DogCommand extends Command {
     });
   }
 
-  async exec(msg) {
+  public async exec(msg: Message) {
     const res = await axios.get('http://random.dog/woof', {
       responseType: 'text'
     });
@@ -22,9 +21,7 @@ class DogCommand extends Command {
     const { data: image } = res;
     const embed = new MessageEmbed()
       .setColor(this.client.colors.ok)
-      .setImage(`http://random.dog/${image}`);
-    return msg.util.send(msg.author, embed);
+      .setImage(`http://random.dog/${image as string}`);
+    return msg.util!.send(msg.author, embed);
   }
 }
-
-module.exports = DogCommand;

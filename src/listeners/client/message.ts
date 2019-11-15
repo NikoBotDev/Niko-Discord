@@ -1,7 +1,8 @@
-const { Listener } = require('discord-akairo');
-const { xp } = require('../../services');
-
-class MessageListener extends Listener {
+import { Listener } from 'discord-akairo';
+import { Message } from 'discord.js';
+import * as xp from '../../services/xp.service';
+import IUser from '../../data/interfaces/IUser';
+export default class MessageListener extends Listener {
   constructor() {
     super('message', {
       emitter: 'client',
@@ -10,20 +11,17 @@ class MessageListener extends Listener {
     });
   }
 
-  /**
-   * @param {Message} msg
-   */
-  async exec(msg) {
+  public async exec(msg: Message) {
     if (msg.author.bot) return;
     // Leveling
-    const [user] = await this.client.db.profiles.findOrBuild({
+    const [user]: [IUser, boolean] = await this.client.db.profiles.findOrBuild({
       where: {
         userId: msg.author.id
       }
     });
 
     xp.addRewards(user);
-    const nextXp = xp.toNextLevel(user.level, true);
+    const nextXp = xp.toNextLevel(user.level, true) as number;
 
     if (user.xp >= nextXp) {
       user.level += 1;
@@ -36,5 +34,3 @@ class MessageListener extends Listener {
     // Coin Event
   }
 }
-
-module.exports = MessageListener;

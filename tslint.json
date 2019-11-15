@@ -1,0 +1,17 @@
+{
+  "defaultSeverity": "error",
+  "linterOptions": {
+    "format": "codeFrame"
+  },
+  "extends": ["tslint:recommended"],
+  "jsRules": {},
+  "rules": {
+    "ban-ts-ignore": true,
+    "quotemark": [true, "single", "avoid-escape"],
+    "trailing-comma": false,
+    "object-literal-sort-keys": false,
+    "curly": [true, "ignore-same-line"],
+    "ordered-imports": false
+  },
+  "rulesDirectory": []
+}

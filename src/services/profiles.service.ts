@@ -18,7 +18,7 @@ function shortName(entireTag: string): string {
 }
 // eslint-disable-next-line
 function getGlobalRank(users: IUser[], userId: string): number | string {
-  const globalRank = users.findIndex(user => user.userId === userId);
+  const globalRank = users.findIndex((user) => user.userId === userId);
   if (globalRank === -1) return 'Unknown';
   return globalRank;
 }
@@ -112,6 +112,4 @@ async function getImageFor(data: IUser, member: GuildMember, msg: Message) {
   return buffer;
 }
 
-export {
-  getImageFor
-};
+export { getImageFor };

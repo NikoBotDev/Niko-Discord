@@ -2,6 +2,8 @@
   "singleQuote": true,
   "semi": true,
   "bracketSpacing": true,
-  "arrowParens": "avoid",
-  "endOfLine": "auto"
+  "arrowParens": "always",
+  "endOfLine": "auto",
+  "quoteProps": "as-needed",
+  "parser": "typescript"
 }

@@ -1,7 +1,6 @@
-const { Command } = require('discord-akairo');
-const { MessageEmbed } = require('discord.js');
-
-class AvatarCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed, User } from 'discord.js';
+export default class AvatarCommand extends Command {
   constructor() {
     super('avatar', {
       aliases: ['avatar'],
@@ -16,7 +15,7 @@ class AvatarCommand extends Command {
         {
           id: 'user',
           type: 'user',
-          default: msg => msg.author,
+          default: (msg: Message) => msg.author,
           description: 'User to fetch avatar',
           prompt: {
             start: 'What user would you like to get the avatar?\n'
@@ -26,7 +25,7 @@ class AvatarCommand extends Command {
     });
   }
 
-  exec(msg, { user }) {
+  public exec(msg: Message, { user }: { user: User }) {
     const embed = new MessageEmbed()
       .setColor(this.client.colors.ok)
       .setDescription(`Avatar for **${user.tag}**`)
@@ -36,8 +35,6 @@ class AvatarCommand extends Command {
           size: 2048
         })
       );
-    msg.util.send('', embed);
+    msg.util!.send('', embed);
   }
 }
-
-module.exports = AvatarCommand;

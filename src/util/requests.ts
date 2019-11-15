@@ -12,7 +12,7 @@ async function getHTML(url: string) {
   }
 }
 
-async function getImage(url: string, config = {}) {
+async function getImage(url: string, config = {}): Promise<Buffer> {
   try {
     const res = await axios(url, {
       responseType: 'arraybuffer',
@@ -38,14 +38,14 @@ async function getJSON(url: string, config = {}) {
 }
 
 const sendAndReact = async (msg: Message, ...reactions: EmojiResolvable[]) => {
-  reactions.forEach(reaction => msg.react(reaction));
+  reactions.forEach((reaction) => msg.react(reaction));
 };
 
 /**
  * Stop the function for the given ms.
  */
 function wait(time: number): Promise<undefined> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
 }

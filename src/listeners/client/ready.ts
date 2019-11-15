@@ -1,17 +1,19 @@
-const { Listener } = require('discord-akairo');
-const { DiscordAPIError } = require('discord.js');
-const { Op } = require('sequelize');
-const { addMinutes } = require('date-fns');
-const { logger } = require('../../classes');
-const {
-  Streams: { getStreamData, getAlertEmbed, getOfflineEmbed }
-} = require('../../util');
+import { Listener } from 'discord-akairo';
+import { DiscordAPIError, TextChannel } from 'discord.js';
+import { Op, Model } from 'sequelize';
+import addMinutes from 'date-fns/addMinutes';
+import logger from '../../classes/Logger';
+import {
+  getStreamData,
+  getAlertEmbed,
+  getOfflineEmbed
+} from '../../util/streams';
 
 function fallback() {
   /* empty */
 }
 
-class ReadyListener extends Listener {
+export default class ReadyListener extends Listener {
   constructor() {
     super('ready', {
       emitter: 'client',
@@ -20,30 +22,29 @@ class ReadyListener extends Listener {
     });
   }
 
-  exec() {
-    const {
-      user,
-      user: { tag }
-    } = this.client;
-    logger.info(`[READY STATE - USER: ${tag}]`);
-    this.client.user.setActivity(`@${user.username} help`);
+  public exec() {
+    const botUser = this.client.user;
+    logger.info(`[READY STATE - USER: ${botUser!.tag}]`);
+    this.client.user!.setActivity(`@${botUser!.username} help`);
     setInterval(this.checkMutes.bind(this), 6e4);
     setInterval(this.checkStreams.bind(this), 3e5);
     setInterval(this.checkReminders.bind(this), 3e4);
   }
 
-  async checkStreams() {
+  private async checkStreams() {
     const streams = await this.client.db.streams.findAll();
     if (streams.length === 0) return;
-    const promises = [];
-    streams.forEach(async stream => {
+    const promises: Array<Promise<any>> = [];
+    streams.forEach(async (stream: Model) => {
       try {
-        const guild = this.client.guilds.get(stream.get('guildId'));
+        const guild = this.client.guilds.get(stream.get('guildId') as string);
         const channel = guild
-          ? guild.channels.get(stream.get('channelId'))
+          ? (guild.channels.get(stream.get(
+              'channelId'
+            ) as string) as TextChannel)
           : null;
         if (!channel) return;
-        const data = await getStreamData(stream.get('username'));
+        const data = await getStreamData(stream.get('username') as string);
         if (!data) return;
         if (
           data.stream &&
@@ -66,7 +67,7 @@ class ReadyListener extends Listener {
         } else if (!data.stream && stream.get('streaming') === true) {
           promises.push(stream.update({ streaming: false }));
           const embed = getOfflineEmbed(
-            stream.get('username'),
+            stream.get('username') as string,
             this.client.colors.error
           );
           channel.send(embed).catch(fallback);
@@ -76,10 +77,10 @@ class ReadyListener extends Listener {
         stream.destroy();
       }
     });
-    Promise.all(promises).catch(e => logger.error(e.message));
+    Promise.all(promises).catch((e) => logger.error(e.message));
   }
 
-  async checkMutes() {
+  private async checkMutes() {
     const mutes = await this.client.db.mutes.findAll({
       where: {
         endDate: {
@@ -88,16 +89,20 @@ class ReadyListener extends Listener {
       }
     });
     if (mutes.length === 0) return;
-    mutes.forEach(mute => {
+    mutes.forEach((mute: Model) => {
       try {
-        const guild = this.client.guilds.get(mute.get('guildId'));
+        const guild = this.client.guilds.get(mute.get('guildId') as string);
         if (!guild) throw new Error('');
-        const member = guild.members.get(mute.get('userId'));
-        const muteRoleId = this.client.settings.get(guild.id, 'muteRoleId');
+        const member = guild.members.get(mute.get('userId') as string);
+        const muteRoleId = this.client.settings.get(
+          guild.id,
+          'muteRoleId',
+          ''
+        ) as string;
         const role = guild.roles.get(muteRoleId);
         if (!muteRoleId) throw new Error('');
-        if (!role.editable) throw new Error('');
-        member.roles.remove(role).catch(fallback);
+        if (!role || !role.editable) throw new Error('');
+        if (member) member.roles.remove(role);
         mute.destroy();
       } catch (err) {
         mute.destroy();
@@ -105,8 +110,8 @@ class ReadyListener extends Listener {
     });
   }
 
-  async checkReminders() {
-    const expiredReminders = await this.client.db.reminders.findAll({
+  private async checkReminders() {
+    const expiredReminders: Model[] = await this.client.db.reminders.findAll({
       where: {
         in_: {
           [Op.lte]: new Date()
@@ -114,21 +119,23 @@ class ReadyListener extends Listener {
       }
     });
     if (expiredReminders.length === 0) return;
-    expiredReminders.forEach(reminder => {
-      const { of_, userId, channelId, guildId } = reminder.get({ plain: true });
+    expiredReminders.forEach((reminder) => {
+      const { of_, userId, channelId, guildId } = reminder.get({
+        plain: true
+      }) as any;
       const user = this.client.users.get(userId);
-      if (!channelId) {
+      if (!channelId && user) {
         user.send(`You wanted me to remind you of: *${of_}*`).catch(fallback);
       } else {
         const guild = this.client.guilds.get(guildId);
-        const channel = guild ? guild.channels.get(channelId) : null;
-        channel
-          .send(`${user}, You wanted me to remind you of: ${of_}`)
-          .catch(fallback);
+        const channel = guild
+          ? (guild.channels.get(channelId) as TextChannel)
+          : null;
+        if (guild && channel) {
+          channel.send(`${user}, You wanted me to remind you of: ${of_}`);
+        }
       }
       reminder.destroy();
     });
   }
 }
-
-module.exports = ReadyListener;

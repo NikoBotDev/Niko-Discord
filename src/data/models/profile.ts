@@ -1,4 +1,5 @@
-const Profiles = (sequelize, DataTypes) => {
+import { Sequelize, DataTypes as DT } from 'sequelize';
+const Profiles = (sequelize: Sequelize, DataTypes: typeof DT) => {
   return sequelize.define(
     'profiles',
     {
@@ -22,7 +23,7 @@ const Profiles = (sequelize, DataTypes) => {
           min: 0
         }
       },
-      married: DataTypes.TEXT,
+      married: DataTypes.TEXT({ length: 'tiny' }),
       profile_bg: {
         type: DataTypes.STRING,
         defaultValue: 'default'
@@ -36,7 +37,7 @@ const Profiles = (sequelize, DataTypes) => {
         defaultValue: []
       },
       streak: {
-        type: DataTypes.INTEGER(1),
+        type: DataTypes.INTEGER({ length: 1 }),
         defaultValue: 0
       }
     },
@@ -51,5 +52,4 @@ const Profiles = (sequelize, DataTypes) => {
     }
   );
 };
-
-module.exports = Profiles;
+export default Profiles;

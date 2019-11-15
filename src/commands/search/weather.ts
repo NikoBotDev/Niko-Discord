@@ -1,11 +1,8 @@
-const { Command } = require('discord-akairo');
-const { Message, MessageEmbed } = require('discord.js');
-const { stringify } = require('querystring');
-const {
-  requests: { getJSON }
-} = require('../../util');
-
-class WeatherCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
+import { stringify } from 'querystring';
+import { getJSON } from '../../util/requests';
+export default class WeatherCommand extends Command {
   constructor() {
     super('weather', {
       aliases: ['weather'],
@@ -29,12 +26,7 @@ class WeatherCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   * @param {Object} args
-   * @param {string} args.city
-   */
-  async exec(msg, { city }) {
+  public async exec(msg: Message, { city }: { city: string }) {
     try {
       const data = await this.getWeather(city);
       const {
@@ -65,13 +57,13 @@ class WeatherCommand extends Command {
           weather[0].description,
           `http://openweathermap.org/img/w/${weather[0].icon}.png`
         );
-      msg.util.send('', embed);
+      msg.util!.send('', embed);
     } catch (err) {
       return msg.reply(err);
     }
   }
 
-  async getWeather(city) {
+  private async getWeather(city: string) {
     const query = stringify({
       q: city,
       appid: process.env.WEATHER_KEY,
@@ -86,9 +78,7 @@ class WeatherCommand extends Command {
     return data;
   }
 
-  getFormattedTime(time) {
+  private getFormattedTime(time) {
     return `${new Date(time * 1000).toTimeString().split(' ')[0]} UTC`;
   }
 }
-
-module.exports = WeatherCommand;

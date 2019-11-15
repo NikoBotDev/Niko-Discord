@@ -1,14 +1,29 @@
-const {
-  Command,
-  Argument: { validate }
-} = require('discord-akairo');
-const { Message, MessageAttachment } = require('discord.js');
-const { stringify } = require('querystring');
-const {
-  requests: { getImage }
-} = require('../../util');
+import { Command, Argument } from 'discord-akairo';
+import { Message, MessageAttachment } from 'discord.js';
+import { stringify } from 'querystring';
+import { getImage } from '../../util/requests';
+export default class OsuProfileCommand extends Command {
+  public static modeToNumber(mode: string): number {
+    switch (mode) {
+      case 'std':
+      case 'standard':
+        return 0;
 
-class OsuProfileCommand extends Command {
+      case 'taiko':
+        return 1;
+
+      case 'ctb':
+      case 'catchthebeat':
+        return 2;
+
+      case 'mania':
+      case 'osu!mania':
+        return 3;
+
+      default:
+        return 0;
+    }
+  }
   constructor() {
     super('osu-profile', {
       aliases: ['osu-profile', 'osup'],
@@ -21,7 +36,7 @@ class OsuProfileCommand extends Command {
       args: [
         {
           id: 'username',
-          type: validate('string', username => {
+          type: validate('string', (username) => {
             return /\w+/.test(username);
           }),
           prompt: {
@@ -50,13 +65,10 @@ class OsuProfileCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   * @param {Object} args
-   * @param {string} args.username
-   * @param {string} args.color
-   */
-  async exec(msg, { username, color, mode }) {
+  public async exec(
+    msg: Message,
+    { username, color, mode }: { [key: string]: string }
+  ) {
     const query = stringify({
       colour: `hex${color.replace('#', '')}`,
       uname: username,
@@ -71,28 +83,4 @@ class OsuProfileCommand extends Command {
     const attachment = new MessageAttachment(buffer, 'profile.jpg');
     return msg.channel.send(attachment);
   }
-
-  static modeToNumber(mode) {
-    switch (mode) {
-      case 'std':
-      case 'standard':
-        return 0;
-
-      case 'taiko':
-        return 1;
-
-      case 'ctb':
-      case 'catchthebeat':
-        return 2;
-
-      case 'mania':
-      case 'osu!mania':
-        return 3;
-
-      default:
-        return 0;
-    }
-  }
 }
-
-module.exports = OsuProfileCommand;

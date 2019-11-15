@@ -16,17 +16,19 @@ import Redis from './Redis';
 import Database from './Database';
 import { importModels } from '../util';
 import { hexCode } from '../types';
-import { ModelType, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 const { TOKEN } = process.env;
-const settings: ModelType = Database.db.import('../data/models/settings');
+const settings: typeof Model = Database.db.import('../data/models/settings');
+
 declare module 'discord-akairo' {
+  // tslint:disable-next-line: interface-name
   interface AkairoClient {
     colors: any;
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
     inhibitorHandler: InhibitorHandler;
     settings: SequelizeProvider;
-    db: Sequelize;
+    db: any;
     redis: RedisClient;
   }
 }
@@ -90,7 +92,11 @@ class Niko extends AkairoClient {
     return Database.db;
   }
 
-  async setup() {
+  public start() {
+    this.login(TOKEN);
+  }
+
+  private async setup() {
     Redis.start();
     Database.start();
     importModels(Database.db);
@@ -107,7 +113,7 @@ class Niko extends AkairoClient {
     this.commandHandler.loadAll();
     this.listenerHandler.loadAll();
     const files = await fs.readdir(join(process.cwd(), 'translations'));
-    const locales = files.map(name => name.split('.')[0]);
+    const locales = files.map((name) => name.split('.')[0]);
     i18n.configure({
       locales,
       directory: join(process.cwd(), 'translations'),
@@ -121,11 +127,7 @@ class Niko extends AkairoClient {
     this.registerCustomTypes();
   }
 
-  start() {
-    this.login(TOKEN);
-  }
-
-  registerCustomTypes() {
+  private registerCustomTypes() {
     this.commandHandler.resolver.addType('hexCode', hexCode);
   }
 }

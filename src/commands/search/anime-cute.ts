@@ -1,11 +1,8 @@
-const { Command } = require('discord-akairo');
-const { Message, MessageEmbed } = require('discord.js');
-const { stringify } = require('querystring');
-const {
-  requests: { getJSON }
-} = require('../../util');
-
-class MoeCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
+import { stringify } from 'querystring';
+import { requests } from '../../util';
+export default class MoeCommand extends Command {
   constructor() {
     super('anime-cute', {
       aliases: ['anime-cute', 'moe', 'cute', 'acte'],
@@ -18,6 +15,9 @@ class MoeCommand extends Command {
         {
           id: 'tags',
           match: 'separate',
+          type: (_: Message, phrase: string) => {
+            return phrase.split(' ');
+          },
           prompt: {
             start: [
               'What tags you want to search?\n',
@@ -30,13 +30,8 @@ class MoeCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   * @param {Object} args
-   * @param {string[]} args.tags
-   */
-  async exec(msg, { tags }) {
-    const images = await getJSON(this.getUrl(tags));
+  public async exec(msg: Message, { tags }: { tags: string[] }) {
+    const images = await requests.getJSON(this.getUrl(tags));
     if (!images || images.length === 0) {
       return msg.reply('No images found');
     }
@@ -47,10 +42,10 @@ class MoeCommand extends Command {
       .setDescription(tags.join(', '))
       .setImage(image)
       .setFooter('Powered by Awwnime');
-    return msg.util.send(embed);
+    msg.util!.send(embed);
   }
 
-  getUrl(tags) {
+  private getUrl(tags: string[]) {
     const query = stringify({
       limit: 100,
       q: tags.join(' ')
@@ -58,5 +53,3 @@ class MoeCommand extends Command {
     return `https://awwnime.redditbooru.com/images/?${query}`;
   }
 }
-
-module.exports = MoeCommand;

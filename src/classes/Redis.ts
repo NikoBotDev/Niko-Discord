@@ -11,10 +11,10 @@ class Redis {
     return client;
   }
 
-  static start() {
+  public static start() {
     client
       .once('ready', () => logger.info('[REDIS CLIENT READY!]'))
-      .on('error', err => logger.error(err))
+      .on('error', (err) => logger.error(err))
       .on('reconnecting', () => logger.warn('[RECONNECTING TO REDIS...]'))
       .once('end', () => logger.warn('[DISCONNECTED FROM REDIS]'));
   }

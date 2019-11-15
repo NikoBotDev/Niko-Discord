@@ -1,11 +1,15 @@
-const {
-  Command,
-  Argument: { range, union }
-} = require('discord-akairo');
-const { Message, MessageEmbed, GuildMember } = require('discord.js');
-const { oneLine } = require('common-tags');
+import { Command, Argument, PrefixSupplier } from 'discord-akairo';
+import { Message, MessageEmbed, GuildMember, Collection } from 'discord.js';
+import { oneLine } from 'common-tags';
 
-class PurgeCommand extends Command {
+interface IPurgeCommandArgs {
+  amount: number;
+  type: string | GuildMember;
+  filterPinned: boolean;
+}
+type FilterFunc = (m: Message) => boolean;
+
+export default class PurgeCommand extends Command {
   constructor() {
     super('purge', {
       aliases: ['purge'],
@@ -23,7 +27,7 @@ class PurgeCommand extends Command {
       args: [
         {
           id: 'amount',
-          type: range('integer', 5, 100),
+          type: Argument.range('integer', 5, 100),
           prompt: {
             start: 'How many messages you want to be deleted?\n',
             retry: "This isn't a valid amount, the range must be 5 ~ 100"
@@ -31,7 +35,7 @@ class PurgeCommand extends Command {
         },
         {
           id: 'type',
-          type: union('lowercase', 'memberMention'),
+          type: Argument.union('lowercase', 'memberMention'),
           default: 'all'
         },
         {
@@ -43,33 +47,31 @@ class PurgeCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   * @param {Object} args
-   * @param {number} args.amount
-   * @param {GuildMember|string} args.type
-   */
-  async exec(msg, { amount, type, filterPinned }) {
+  public async exec(
+    msg: Message,
+    { amount, type, filterPinned }: IPurgeCommandArgs
+  ) {
     let messages = await msg.channel.messages.fetch({ limit: amount + 1 });
-    let filter = null;
+    let filter: FilterFunc | null = null;
+    const prefix: PrefixSupplier = this.handler.prefix as PrefixSupplier;
     if (filterPinned) {
-      messages = messages.filter(m => !m.pinned);
+      messages = messages.filter((m) => !m.pinned);
     }
     switch (type) {
       case 'me':
-        filter = m => m.author.id === msg.author.id;
+        filter = (m) => m.author.id === msg.author.id;
         break;
       case 'command':
-        filter = m => m.content.startsWith(this.handler.prefix(msg));
+        filter = (m) => m.content.startsWith(prefix(msg) as string);
         break;
       case 'bot':
-        filter = m => m.author.bot;
+        filter = (m) => m.author.bot;
         break;
       case 'all':
         filter = null;
         break;
       default:
-        filter = m => m.author.id === msg.mentions.members.first().id;
+        filter = (m) => m.author.id === msg.mentions.members!.first()!.id;
     }
     messages = filter ? messages.filter(filter) : messages;
     await msg.channel.bulkDelete(messages, true);
@@ -77,9 +79,7 @@ class PurgeCommand extends Command {
       .setColor(this.client.colors.ok)
       .setDescription(__('command.purge.removed', { amount: messages.size }))
       .setFooter(__('command.purge.removedIn'));
-    const res = await msg.util.send(embed);
-    res.deletable ? res.delete({ timeout: 5e3 }) : null;
+    const res = await msg.util!.send(embed);
+    if (res.deletable) res.delete({ timeout: 5e3 });
   }
 }
-
-module.exports = PurgeCommand;

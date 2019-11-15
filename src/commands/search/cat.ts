@@ -1,9 +1,8 @@
-const { Command } = require('discord-akairo');
-const { Message, MessageEmbed, MessageAttachment } = require('discord.js');
-const axios = require('axios');
-const { extname } = require('path');
-
-class CatCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed, MessageAttachment } from 'discord.js';
+import axios from 'axios';
+import { extname } from 'path';
+export default class CatCommand extends Command {
   constructor() {
     super('cat', {
       aliases: ['cat'],
@@ -15,10 +14,7 @@ class CatCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   */
-  async exec(msg) {
+  public async exec(msg: Message) {
     const res = await axios.get('http://thecatapi.com/api/images/get', {
       responseType: 'arraybuffer'
     });
@@ -33,10 +29,8 @@ class CatCommand extends Command {
     const name = `cat.${ext}`;
     const embed = new MessageEmbed()
       .setColor(this.client.colors.ok)
-      .attachFiles([new MessageAttachment(image, name)])
+      .attachFiles([new MessageAttachment(image as Buffer, name)])
       .setImage(`attachment://${name}`);
-    msg.util.send('', embed);
+    msg.util!.send('', embed);
   }
 }
-
-module.exports = CatCommand;

@@ -6,6 +6,6 @@ const manager = new ShardingManager('./main.js', { token: process.env.TOKEN });
 
 manager.spawn();
 
-manager.on('shardCreate', shard => {
+manager.on('shardCreate', (shard) => {
   logger.info(`Starting shard ${shard.id}`);
 });

@@ -1,10 +1,7 @@
-const {
-  Command,
-  Argument: { range }
-} = require('discord-akairo');
-const { Message, MessageEmbed } = require('discord.js');
+import { Command, Argument } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
 
-class RollCommand extends Command {
+export default class RollCommand extends Command {
   constructor() {
     super('roll', {
       aliases: ['roll'],
@@ -19,7 +16,7 @@ class RollCommand extends Command {
         {
           id: 'num',
           description: 'Max value to be considered while rolling the dices.',
-          type: range('integer', 1, Number.MAX_SAFE_INTEGER),
+          type: Argument.range('integer', 1, Number.MAX_SAFE_INTEGER),
           prompt: {
             retry: `The value must be between **1** and **${Number.MAX_SAFE_INTEGER}**`
           },
@@ -29,18 +26,11 @@ class RollCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   * @param {Object} args
-   * @param {Number} args.num
-   */
-  exec(msg, { num }) {
+  public exec(msg: Message, { num }: { num: number }) {
     num = Math.floor(Math.random() * num) + 1;
     const embed = new MessageEmbed()
       .setColor(this.client.colors.bot)
       .setDescription(`You rolled ${num}`);
-    msg.util.send('', embed);
+    msg.util!.send('', embed);
   }
 }
-
-module.exports = RollCommand;
