@@ -40,5 +40,5 @@ export default class Reminder extends Model<Reminder> {
   @Column(DataType.DATE)
   @AllowNull(false)
   // tslint:disable-next-line: variable-name
-  public _in!: string;
+  public _in!: Date;
 }
