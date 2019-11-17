@@ -22,6 +22,7 @@ export class Profile extends Model<Profile> {
   @Column(DataType.TEXT)
   @PrimaryKey
   public userId!: string;
+
   @Column(DataType.INTEGER)
   @Default(1)
   public level!: number;
@@ -45,11 +46,13 @@ export class Profile extends Model<Profile> {
 
   @Column(DataType.STRING)
   @Default('default')
+  // tslint:disable-next-line: variable-name
   public profile_bg!: string;
 
   @Column(DataType.JSON)
   @Default([])
   public badges!: string[];
+
   @Column(DataType.INTEGER({ length: 1 }))
   @Default(0)
   public streak!: number;
