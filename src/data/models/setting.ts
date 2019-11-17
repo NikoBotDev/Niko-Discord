@@ -7,7 +7,7 @@ import {
   DataType
 } from 'sequelize-typescript';
 @Table({ timestamps: false })
-export default class Settings extends Model<Settings> {
+export default class Setting extends Model<Setting> {
   @Column(DataType.STRING)
   @PrimaryKey
   public guildId!: string;
