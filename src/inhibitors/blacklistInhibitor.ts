@@ -15,6 +15,6 @@ export default class BlacklistInhibitor extends Inhibitor {
       'blacklist',
       []
     );
-    return blacklist.includes(msg.author.id);
+    return blacklist.includes(msg.author!.id);
   }
 }

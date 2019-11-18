@@ -45,7 +45,7 @@ export default class GiphyCommand extends Command {
     const gif = gifs[index];
     const embed = new MessageEmbed()
       .setColor(this.client.colors.ok)
-      .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
+      .setAuthor(msg.author!.tag, msg.author!.displayAvatarURL())
       .setImage(gif.images.original.url)
       .setFooter('Powered by Giphy api');
     return msg.util!.send(embed);

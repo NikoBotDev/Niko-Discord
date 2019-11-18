@@ -12,11 +12,11 @@ export default class MessageListener extends Listener {
   }
 
   public async exec(msg: Message) {
-    if (msg.author.bot) return;
+    if (msg.author!.bot) return;
     // Leveling
     const [user]: [IUser, boolean] = await this.client.db.profiles.findOrBuild({
       where: {
-        userId: msg.author.id
+        userId: msg.author!.id
       }
     });
 

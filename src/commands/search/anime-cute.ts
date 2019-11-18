@@ -38,7 +38,7 @@ export default class MoeCommand extends Command {
     const image = images[Math.floor(Math.random() * images.length)].cdnUrl;
     const embed = new MessageEmbed()
       .setColor(this.client.colors.ok)
-      .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
+      .setAuthor(msg.author!.tag, msg.author!.displayAvatarURL())
       .setDescription(tags.join(', '))
       .setImage(image)
       .setFooter('Powered by Awwnime');

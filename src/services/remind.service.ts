@@ -12,7 +12,7 @@ async function createTimer(msg: Message, milliseconds: number, of_: string) {
   const { reminders } = client.db.models;
   const reminder = await reminders.create({
     in_: calculatedTime,
-    userId: msg.author.id,
+    userId: msg.author!.id,
     guildId: msg.guild ? msg.guild.id : null,
     channelId: msg.channel.type !== 'dm' ? msg.channel.id : null,
     of_

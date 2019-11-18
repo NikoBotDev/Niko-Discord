@@ -13,7 +13,7 @@ export default class PingCommand extends Command {
   }
 
   public async exec(msg: Message) {
-    const pingMsg = await msg.util!.send('Pinging~');
+    const pingMsg = (await msg.util!.send('Pinging~')) as Message;
     const latency = pingMsg.createdTimestamp - msg.createdTimestamp;
     return msg.util!.send([
       `**Gateway Ping~ ${latency}ms**`,

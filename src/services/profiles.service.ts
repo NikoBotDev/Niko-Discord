@@ -5,8 +5,8 @@ import { Canvas } from 'canvas-constructor';
 import { readFile } from 'fs-nextra';
 import { join } from 'path';
 import { getImage } from '../util/requests';
-import exp from './xp.service';
-import rank from './rank.service';
+import * as exp from './xp.service';
+import * as rank from './rank.service';
 import IUser from '../data/interfaces/IUser';
 const basePath = join(process.cwd(), 'data', 'resources');
 
@@ -55,7 +55,7 @@ async function getImageFor(data: IUser, member: GuildMember, msg: Message) {
   const { coins, xp, level, userId, profile_bg } = data.get({
     plain: true
   }) as IUser;
-  const calculated = exp.toNextLevel(level, true);
+  const calculated = exp.toNextLevel(level, true) as number;
   const globalRank = rank.getGlobalRank(users, userId);
   const canvas = new Canvas(520, 318);
   const barSize = Math.PI * 2 * Math.min(Math.max(0, xp / calculated || 1), 1);
@@ -105,7 +105,7 @@ async function getImageFor(data: IUser, member: GuildMember, msg: Message) {
       .clip()
       .setShadowBlur(5)
       .setShadowColor('rgba(0, 0, 0, 0.2)')
-      .addImage(avatar, 208, 23, 105, 105);
+      .addImage(avatar as Buffer, 208, 23, 105, 105);
     return canvas.toBufferAsync();
   };
   const buffer = await generate();

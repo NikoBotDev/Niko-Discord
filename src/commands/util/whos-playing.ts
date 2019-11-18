@@ -31,7 +31,7 @@ export default class WhosPlayingCommand extends Command {
       .setColor(this.client.colors.ok)
       .setAuthor("Who's playing", msg.guild!.iconURL() as string)
       .setDescription(stringArray.join('\n'))
-      .setFooter(msg.author.tag, msg.author.avatarURL() as string)
+      .setFooter(msg.author!.tag, msg.author!.avatarURL() as string)
       .setTimestamp();
     return msg.channel.send(embed);
   }

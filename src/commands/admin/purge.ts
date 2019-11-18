@@ -59,19 +59,19 @@ export default class PurgeCommand extends Command {
     }
     switch (type) {
       case 'me':
-        filter = (m) => m.author.id === msg.author.id;
+        filter = (m) => m.author!.id === msg.author!.id;
         break;
       case 'command':
         filter = (m) => m.content.startsWith(prefix(msg) as string);
         break;
       case 'bot':
-        filter = (m) => m.author.bot;
+        filter = (m) => m.author!.bot;
         break;
       case 'all':
         filter = null;
         break;
       default:
-        filter = (m) => m.author.id === msg.mentions.members!.first()!.id;
+        filter = (m) => m.author!.id === msg.mentions.members!.first()!.id;
     }
     messages = filter ? messages.filter(filter) : messages;
     await msg.channel.bulkDelete(messages, true);
@@ -79,7 +79,7 @@ export default class PurgeCommand extends Command {
       .setColor(this.client.colors.ok)
       .setDescription(__('command.purge.removed', { amount: messages.size }))
       .setFooter(__('command.purge.removedIn'));
-    const res = await msg.util!.send(embed);
+    const res = await msg.util!.send(embed) as Message;
     if (res.deletable) res.delete({ timeout: 5e3 });
   }
 }

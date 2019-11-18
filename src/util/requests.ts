@@ -12,7 +12,7 @@ async function getHTML(url: string) {
   }
 }
 
-async function getImage(url: string, config = {}): Promise<Buffer> {
+async function getImage(url: string, config = {}): Promise<Buffer | null> {
   try {
     const res = await axios(url, {
       responseType: 'arraybuffer',

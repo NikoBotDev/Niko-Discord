@@ -36,7 +36,7 @@ export default class OsuProfileCommand extends Command {
       args: [
         {
           id: 'username',
-          type: validate('string', (username) => {
+          type: Argument.validate('string', (_, username: string) => {
             return /\w+/.test(username);
           }),
           prompt: {
@@ -80,7 +80,7 @@ export default class OsuProfileCommand extends Command {
       avatarrounding: 50
     });
     const buffer = await getImage(`https://lemmmy.pw/osusig/sig.php?${query}`);
-    const attachment = new MessageAttachment(buffer, 'profile.jpg');
+    const attachment = new MessageAttachment(buffer as Buffer, 'profile.jpg');
     return msg.channel.send(attachment);
   }
 }

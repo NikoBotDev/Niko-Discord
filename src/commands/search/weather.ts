@@ -78,7 +78,7 @@ export default class WeatherCommand extends Command {
     return data;
   }
 
-  private getFormattedTime(time) {
+  private getFormattedTime(time: number) {
     return `${new Date(time * 1000).toTimeString().split(' ')[0]} UTC`;
   }
 }
