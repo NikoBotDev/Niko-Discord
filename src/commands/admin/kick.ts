@@ -1,10 +1,9 @@
-const {
-  Command,
-  Argument: { validate }
-} = require('discord-akairo');
-const { MessageEmbed } = require('discord.js');
+import { Command, Argument } from 'discord-akairo';
+import { MessageEmbed, GuildMember, Message } from 'discord.js';
 
-class KickCommand extends Command {
+type KickCommandArguments = { member: GuildMember; reason?: string };
+
+export default class KickCommand extends Command {
   constructor() {
     super('kick', {
       aliases: ['kick'],
@@ -20,9 +19,10 @@ class KickCommand extends Command {
       args: [
         {
           id: 'member',
-          type: validate(
+          type: Argument.validate(
             'member',
-            member => member.id !== member.guild.ownerID && member.kickable
+            (_, __, member: GuildMember) =>
+              member.id !== member.guild.ownerID && member.kickable
           ),
           prompt: {
             start: 'What member you want to kick?\n',
@@ -31,20 +31,17 @@ class KickCommand extends Command {
         },
         {
           id: 'reason',
-          type: validate('string', reason => reason.length <= 1200),
+          type: Argument.validate(
+            'string',
+            (_, reason) => reason.length <= 1200
+          ),
           match: 'rest'
         }
       ]
     });
   }
 
-  /**
-   * @param {Message} msg
-   * @param {Object} args
-   * @param {GuildMember} args.member
-   * @param {string} args.reason
-   */
-  async exec(msg, { member, reason }) {
+  public async exec(msg: Message, { member, reason }: KickCommandArguments) {
     // Permission check
     await member.kick(reason);
 
@@ -64,8 +61,6 @@ class KickCommand extends Command {
       )
       .addField(__('default+reason'), reason)
       .setFooter(msg.author.tag, msg.author.displayAvatarURL());
-    return msg.util.send(embed);
+    return msg.util!.send(embed);
   }
 }
-
-module.exports = KickCommand;
