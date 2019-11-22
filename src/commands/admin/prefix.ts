@@ -1,7 +1,7 @@
-const { Command } = require('discord-akairo');
-const { Message } = require('discord.js');
-
-class PrefixCommand extends Command {
+import { Command } from 'discord-akairo';
+import { Message } from 'discord.js';
+type PrefixCommandArguments = { prefix: string };
+export default class PrefixCommand extends Command {
   constructor() {
     super('prefix', {
       aliases: ['prefix', 'px'],
@@ -22,19 +22,16 @@ class PrefixCommand extends Command {
     });
   }
 
-  /**
-   * @param {Message} msg
-   * @param {Object} args
-   * @param {string} args.prefix
-   */
-  async exec(msg, { prefix }) {
-    const oldPrefix = this.client.settings.get(msg.guild.id, 'prefix', '!b');
+  public async exec(msg: Message, { prefix }: PrefixCommandArguments) {
+    const oldPrefix: string = this.client.settings.get(
+      msg.guild!.id,
+      'prefix',
+      '!b'
+    );
     if (!prefix) {
       return msg.reply(__('command.prefix.nowPrefix', { prefix: oldPrefix }));
     }
-    await this.client.settings.set(msg.guild.id, 'prefix', prefix);
+    await this.client.settings.set(msg.guild!.id, 'prefix', prefix);
     msg.reply(__('command.prefix.changed', { oldPrefix, newPrefix: prefix }));
   }
 }
-
-module.exports = PrefixCommand;
