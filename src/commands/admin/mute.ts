@@ -1,13 +1,19 @@
-const {
-  Command,
-  Argument: { validate }
-} = require('discord-akairo');
+import { Command, Argument } from 'discord-akairo';
+import {
+  MessageEmbed,
+  Message,
+  GuildMember,
+  Role,
+  GuildChannelStore
+} from 'discord.js';
+import sherlock from 'sherlockjs';
+import formatDistance from 'date-fns/formatDistance';
 
-const { MessageEmbed } = require('discord.js');
-
-const sherlock = require('sherlockjs');
-
-const formatDistance = require('date-fns/formatDistance');
+type MuteCommandArguments = {
+  member: GuildMember;
+  time: string;
+  reason?: string;
+};
 
 class MuteCommand extends Command {
   constructor() {
@@ -25,9 +31,10 @@ class MuteCommand extends Command {
       args: [
         {
           id: 'member',
-          type: validate(
+          type: Argument.validate(
             'member',
-            member => member.id !== member.guild.ownerID && member.kickable
+            (_, __, member: GuildMember) =>
+              member.id !== member.guild.ownerID && member.kickable
           ),
           prompt: {
             start: 'What member you want to mute?\n',
@@ -42,23 +49,30 @@ class MuteCommand extends Command {
         },
         {
           id: 'reason',
-          type: validate('string', reason => reason.length <= 1200),
+          type: Argument.validate(
+            'string',
+            (_, __, reason: string) => reason.length <= 1200
+          ),
           match: 'rest'
         }
       ]
     });
   }
 
-  async exec(msg, { member, time, reason }) {
+  public async exec(
+    msg: Message,
+    { member, time, reason }: MuteCommandArguments
+  ) {
+    const guild = msg.guild!;
     // Check if the user already is muted
     const isMuted = await this.client.db.mutes.findOne({
       where: {
         userId: member.id,
-        guildId: msg.guild.id
+        guildId: guild.id
       }
     });
 
-    const muteRoleId = this.client.settings.get(msg.guild.id, 'muteRoleId');
+    const muteRoleId = this.client.settings.get(guild.id, 'muteRoleId', null);
 
     if (isMuted) {
       if (!muteRoleId) {
@@ -81,24 +95,24 @@ class MuteCommand extends Command {
       muteRole = await this.getRoleOrCreate(msg);
       if (!muteRole) return null;
       // Assign the role as mute role for this server
-      await this.client.settings.set(msg.guild.id, 'muteRoleId', muteRole.id);
+      await this.client.settings.set(guild.id, 'muteRoleId', muteRole.id);
       // Loop through all the channels and change their permissions for Mute Role
-      const { channels } = msg.guild;
+      const { channels } = guild;
       await this.changePermissions(channels, muteRole.id);
     }
     // Now the role exists lets get it
-    muteRole = msg.guild.roles.get(muteRoleId);
+    muteRole = guild.roles.get(muteRoleId);
     // Parse the end time using sherlock
     const endDate = sherlock.parse(time);
     // Add the role to the muted member
-    await member.roles.add(muteRole, { reason });
+    await member.roles.add(muteRole as Role, reason);
 
     // Add mute to the database
 
     await this.client.db.mutes.create({
       userId: member.id,
-      modId: msg.member.id,
-      guildId: msg.guild.id,
+      modId: msg.member!.id,
+      guildId: guild.id,
       endDate: endDate.startDate.getTime()
     });
     // Make reply embed
@@ -120,38 +134,39 @@ class MuteCommand extends Command {
         })
       )
       .setFooter(msg.author.tag, msg.author.displayAvatarURL());
-    return msg.util.send(embed);
+    return msg.util!.send(embed);
   }
 
-  async getRoleOrCreate(msg) {
-    let muteRole = msg.guild.roles.find(
-      role => role.name.toLowerCase() === 'muted'
+  private async getRoleOrCreate(msg: Message): Promise<Role | null> {
+    const guild = msg.guild!;
+    let muteRole = guild.roles.find(
+      (role) => role.name.toLowerCase() === 'muted'
     );
     if (muteRole) return muteRole;
-    if (!msg.guild.me.permissions.has('MANAGE_ROLES')) {
+    if (!guild.me!.permissions.has('MANAGE_ROLES')) {
       msg.reply(
         `I can't make a mute role for this action,
                 please do it yourself`
       );
       return null;
     }
-    muteRole = await msg.guild.roles
-      .create({
-        data: {
-          name: 'Muted',
-          permissions: 0
-        },
-        reason: 'Role needed for mute command'
-      })
-      .catch(() => null);
+    muteRole = await guild.roles.create({
+      data: {
+        name: 'Muted',
+        permissions: 0
+      },
+      reason: 'Role needed for mute command'
+    });
     if (!muteRole) {
       msg.reply(`Something went wrong while making the role, sorry...`);
-      return null;
     }
     return muteRole;
   }
 
-  async changePermissions(channels, muteRoleId) {
+  private async changePermissions(
+    channels: GuildChannelStore,
+    muteRoleId: string
+  ): Promise<void> {
     for (const channel of channels.values()) {
       try {
         if (channel.type === 'text') {
@@ -179,5 +194,3 @@ class MuteCommand extends Command {
     }
   }
 }
-
-module.exports = MuteCommand;
