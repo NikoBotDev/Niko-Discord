@@ -1,10 +1,9 @@
-const {
-  Command,
-  Argument: { validate }
-} = require('discord-akairo');
-const { MessageEmbed } = require('discord.js');
+import { Command, Argument } from 'discord-akairo';
+import { Message, GuildMember, MessageEmbed } from 'discord.js';
+import logger from '../../classes/Logger';
+type SoftBanCommandArguments = { member: GuildMember; reason: string };
 
-class SoftBanCommand extends Command {
+export default class SoftBanCommand extends Command {
   constructor() {
     super('softban', {
       aliases: ['softban', 'sb'],
@@ -20,9 +19,10 @@ class SoftBanCommand extends Command {
       args: [
         {
           id: 'member',
-          type: validate(
+          type: Argument.validate(
             'member',
-            member => member.id !== member.guild.ownerID && member.bannable
+            (_, __, member: GuildMember) =>
+              member.id !== member.guild.ownerID && member.bannable
           ),
           prompt: {
             start: 'What member you want to ban?\n',
@@ -31,18 +31,28 @@ class SoftBanCommand extends Command {
         },
         {
           id: 'reason',
-          type: validate('string', reason => reason.length <= 1200),
+          type: Argument.validate(
+            'string',
+            (_, __, reason: string) => reason.length <= 1200
+          ),
           match: 'rest'
         }
       ]
     });
   }
 
-  async exec(msg, { member, reason }) {
+  public async exec(msg: Message, { member, reason }: SoftBanCommandArguments) {
     // Permission check
+    if (!member.bannable || !SoftBanCommand.testHierarchy(msg.member, member)) {
+      return; // TODO i18n
+    }
     await member.ban({ reason, days: 2 });
     setTimeout(() => {
-      msg.guild.members.unban(member, 'Soft ban timeout').catch(() => null);
+      msg.guild.members.unban(member, 'Soft ban timeout').catch((err) => {
+        logger.error(
+          `Couldn't unban user [${member.displayName}](${member.id}) because of ${err}`
+        );
+      });
     }, 4e4);
     const embed = new MessageEmbed()
       .setColor(this.client.colors.ok)
@@ -56,13 +66,12 @@ class SoftBanCommand extends Command {
       )
       .addField('Reason', reason)
       .setFooter(msg.author.tag, msg.author.displayAvatarURL());
-    msg.util.send(embed);
+    msg.util!.send(embed);
   }
-
-  // eslint-disable-next-line no-unused-vars
-  async testHierarchy(mod, member) {
-    // TODO
+  /**
+   * Checks if moderator's highest role is higher than member's role
+   */
+  public static testHierarchy(mod: GuildMember, member: GuildMember): boolean {
+    return mod.roles.highest.comparePositionTo(member.roles.highest) > 0;
   }
 }
-
-module.exports = SoftBanCommand;
