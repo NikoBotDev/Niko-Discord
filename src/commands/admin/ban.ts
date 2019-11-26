@@ -1,12 +1,9 @@
-'use strict';
+import { Command, Argument } from 'discord-akairo';
+import { Message, GuildMember, MessageEmbed } from 'discord.js';
 
-const {
-  Command,
-  Argument: { validate }
-} = require('discord-akairo');
-const { MessageEmbed } = require('discord.js');
+type BanCommandArguments = { member: GuildMember; reason?: string };
 
-class BanCommand extends Command {
+export default class BanCommand extends Command {
   constructor() {
     super('ban', {
       aliases: ['ban'],
@@ -22,9 +19,10 @@ class BanCommand extends Command {
       args: [
         {
           id: 'member',
-          type: validate(
+          type: Argument.validate(
             'member',
-            member => member.id !== member.guild.ownerID && member.bannable
+            (_, __, member: GuildMember) =>
+              member.id !== member.guild.ownerID && member.bannable
           ),
           prompt: {
             start: 'What member you want to ban?\n',
@@ -33,14 +31,17 @@ class BanCommand extends Command {
         },
         {
           id: 'reason',
-          type: validate('string', reason => reason.length <= 1200),
+          type: Argument.validate(
+            'string',
+            (_, reason: string) => reason.length <= 1200
+          ),
           match: 'rest'
         }
       ]
     });
   }
 
-  async exec(msg, { member, reason }) {
+  public async exec(msg: Message, { member, reason }: BanCommandArguments) {
     // Permission check
     await member.ban({ reason, days: 2 });
 
@@ -56,8 +57,6 @@ class BanCommand extends Command {
       )
       .addField(__('default+reason'), reason)
       .setFooter(msg.author.tag, msg.author.displayAvatarURL());
-    return msg.util.send(embed);
+    return msg.util!.send(embed);
   }
 }
-
-module.exports = BanCommand;
