@@ -1,11 +1,10 @@
-const {
-  Command,
-  Argument: { validate }
-} = require('discord-akairo');
+import { Command, Argument } from 'discord-akairo';
+import { oneLine } from 'common-tags';
+import { TextChannel, Message } from 'discord.js';
 
-const { oneLine } = require('common-tags');
+type SetByeCommandArguments = { message: string; channel: TextChannel };
 
-class SetByeCommand extends Command {
+export default class SetByeCommand extends Command {
   constructor() {
     super('set-bye', {
       aliases: ['set-bye', 'stb'],
@@ -29,9 +28,10 @@ class SetByeCommand extends Command {
         },
         {
           id: 'message',
-          type: validate('string', msg => {
-            if ((msg.length < 1000 && msg.length > 10) || msg === '=')
+          type: Argument.validate('string', (_, msg) => {
+            if ((msg.length < 1000 && msg.length > 10) || msg === '=') {
               return true;
+            }
             return false;
           }),
           match: 'rest',
@@ -43,7 +43,10 @@ class SetByeCommand extends Command {
     });
   }
 
-  async exec(msg, { message, channel }) {
+  public async exec(
+    msg: Message,
+    { message, channel }: SetByeCommandArguments
+  ) {
     const bye = this.client.settings.get(msg.guild.id, 'bye', {});
     bye.channel = channel.id;
     bye.message = message === '=' ? bye.message : message;
@@ -63,5 +66,3 @@ class SetByeCommand extends Command {
     );
   }
 }
-
-module.exports = SetByeCommand;
