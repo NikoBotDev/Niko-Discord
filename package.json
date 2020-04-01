@@ -48,7 +48,7 @@
     "@types/node": "^12.11.1",
     "@types/redis": "^2.8.14",
     "@types/validator": "^10.11.3",
-    "@types/ws": "^6.0.3",
+    "@types/ws": "^7.2.3",
     "eslint": "6.5.1",
     "eslint-config-airbnb-base": "14.0.0",
     "eslint-config-node": "^4.0.0",
